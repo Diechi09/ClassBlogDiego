@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+  <article style="padding:1rem;border:1px solid #1f2937;border-radius:8px;background:#0b1224;">
+    <h1 style="margin:.25rem 0;">{{ post.title }}</h1>
+    <small>by {{ post.author.username }} • {{ post.date_posted.strftime('%b %d, %Y') }}</small>
+    <p style="margin-top:1rem; white-space:pre-wrap;">{{ post.content }}</p>
+
+    {% if current_user.is_authenticated and current_user.id == post.author.id %}
+      <div style="margin-top:1rem; display:flex; gap:.5rem;">
+        <a class="btn" href="{{ url_for('edit_post', post_id=post.id) }}">Edit</a>
+        <form method="POST"
+              action="{{ url_for('delete_post', post_id=post.id) }}"
+              onsubmit="return confirm('Delete this post?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn" type="submit" style="background:#b91c1c;">Delete</button>
+        </form>
+      </div>
+    {% endif %}
+  </article>
+
+  <!-- Comments list -->
+  <section style="margin-top:1.5rem;">
+    <h2>Comments ({{ post.comments|length }})</h2>
+    {% if post.comments %}
+      <ul style="list-style:none; padding:0; margin:0;">
+        {% for c in post.comments|sort(attribute='date_posted') %}
+          <li style="margin:.75rem 0; padding:.75rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224;">
+            <div style="font-size:.9rem; opacity:.85;">
+              <strong>{{ c.author.username }}</strong> • {{ c.date_posted.strftime('%b %d, %Y %H:%M') }}
+            </div>
+            <div style="margin-top:.25rem; white-space:pre-wrap;">{{ c.content }}</div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No comments yet.</p>
+    {% endif %}
+  </section>
+
+  <!-- Add comment -->
+  <section style="margin-top:1rem;">
+    {% if current_user.is_authenticated %}
+      <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="content"><strong>Add a comment</strong></label><br>
+        <textarea id="content" name="content" rows="4" style="width:100%; max-width:720px; padding:.6rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224; color:#e5e7eb;" required></textarea>
+        <div style="margin-top:.5rem;">
+          <button class="btn" type="submit">Comment</button>
+        </div>
+      </form>
+    {% else %}
+      <p><a href="{{ url_for('login') }}">Log in</a> to comment.</p>
+    {% endif %}
+  </section>
+{% endblock %}
