@@ -3,9 +3,21 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route("/")
-def welcome():
-    return render_template("welcome.html")
+@app.route("/home")
+def home():
+    return render_template("home.html", title="Home")
+
+@app.route("/about")
+def about():
+    return render_template("about.html", title="About")
+
+@app.route("/register")
+def register():
+    return render_template("register.html", title="Register")
+
+@app.route("/login")
+def login():
+    return render_template("login.html", title="Login")
 
 if __name__ == "__main__":
-    # debug=True so you see live reloads while we build
     app.run(debug=True)
