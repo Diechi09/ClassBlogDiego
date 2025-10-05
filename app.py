@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, redirect, request, abort
+from flask import Flask, render_template, url_for, flash, redirect, request, abort, jsonify
 from forms import RegistrationForm, LoginForm, PostForm, CommentForm
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,9 +8,10 @@ from flask_login import (
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import generate_csrf
 from datetime import datetime
+import json
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '888888818'
+app.config['SECRET_KEY'] = 'dev-secret-change-me'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -22,10 +23,12 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login"
 login_manager.login_message_category = "danger"
 
+# Make csrf_token() available in templates
 @app.context_processor
 def inject_csrf_token():
     return dict(csrf_token=generate_csrf)
 
+# ---------- MODELS ----------
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -72,6 +75,7 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"Comment('{self.id}', '{self.date_posted:%Y-%m-%d}')"
+
 
 def ensure_flair_column():
     from sqlalchemy import text
@@ -225,6 +229,124 @@ def add_comment(post_id):
     else:
         flash("Could not add comment.", "danger")
     return redirect(url_for("post_detail", post_id=post.id))
+
+
+@app.get("/api/health")
+def api_health():
+    return jsonify({"status": "ok"}), 200
+
+
+def _post_to_dict(p: Post, with_content: bool = False):
+    base = {
+        "id": p.id,
+        "title": p.title,
+        "flair": p.flair,
+        "author": p.author.username,
+        "user_id": p.user_id,
+        "date_posted": p.date_posted.isoformat(),
+        "comments_count": len(p.comments),
+    }
+    if with_content:
+        base["content"] = p.content
+    return base
+
+
+@app.get("/api/posts")
+def api_posts():
+    """
+    Query params:
+      - flair: filter by flair (e.g., TRADE_HELP, WAIVER_WIRE, INJURY_TALK, OTHER)
+      - q:     search in title/content (case-insensitive)
+      - page:  page number (default 1)
+      - per_page: items per page (default 10, max 50)
+    """
+    flair = request.args.get("flair")
+    q_text = request.args.get("q", "")
+    try:
+        page = max(int(request.args.get("page", 1)), 1)
+    except ValueError:
+        page = 1
+    try:
+        per_page = min(max(int(request.args.get("per_page", 10)), 1), 50)
+    except ValueError:
+        per_page = 10
+
+    q = Post.query
+    if flair:
+        q = q.filter_by(flair=flair)
+    if q_text:
+        like = f"%{q_text}%"
+        q = q.filter((Post.title.ilike(like)) | (Post.content.ilike(like)))
+
+    pagination = q.order_by(Post.date_posted.desc()).paginate(page=page, per_page=per_page)
+    items = [_post_to_dict(p) for p in pagination.items]
+
+    return jsonify({
+        "items": items,
+        "page": pagination.page,
+        "per_page": per_page,
+        "pages": pagination.pages,
+        "total": pagination.total,
+        "flair": flair,
+        "q": q_text
+    }), 200
+
+
+@app.get("/api/posts/<int:post_id>")
+def api_post_detail(post_id):
+    p = Post.query.get_or_404(post_id)
+    return jsonify(_post_to_dict(p, with_content=True)), 200
+
+
+@app.get("/api/posts/<int:post_id>/comments")
+def api_post_comments(post_id):
+    p = Post.query.get_or_404(post_id)
+    data = [{
+        "id": c.id,
+        "post_id": p.id,
+        "author": c.author.username,
+        "user_id": c.user_id,
+        "content": c.content,
+        "date_posted": c.date_posted.isoformat()
+    } for c in sorted(p.comments, key=lambda x: x.date_posted)]
+    return jsonify({"items": data, "total": len(data)}), 200
+
+
+@app.get("/api/stats")
+def api_stats():
+    counts = {
+        "TRADE_HELP": Post.query.filter_by(flair="TRADE_HELP").count(),
+        "WAIVER_WIRE": Post.query.filter_by(flair="WAIVER_WIRE").count(),
+        "INJURY_TALK": Post.query.filter_by(flair="INJURY_TALK").count(),
+        "OTHER": Post.query.filter_by(flair="OTHER").count(),
+        "TOTAL": Post.query.count(),
+    }
+    latest = Post.query.order_by(Post.date_posted.desc()).limit(5).all()
+    latest_items = [{
+        "id": p.id,
+        "title": p.title,
+        "flair": p.flair,
+        "author": p.author.username,
+        "date_posted": p.date_posted.isoformat()
+    } for p in latest]
+    return jsonify({"counts": counts, "latest": latest_items}), 200
+
+
+@app.get("/api/export/posts")
+def api_export_posts():
+    posts = Post.query.order_by(Post.date_posted.desc()).all()
+    data = [_post_to_dict(p, with_content=True) for p in posts]
+    filename = f'posts-export-{datetime.utcnow().strftime("%Y%m%d-%H%M%SZ")}.json'
+    return app.response_class(
+        response=json.dumps(data, ensure_ascii=False, indent=2),
+        mimetype="application/json",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    )
+
+
+@app.route("/api-demo")
+def api_demo():
+    return render_template("api_demo.html", title="API Demo")
 
 
 @app.route("/seed")

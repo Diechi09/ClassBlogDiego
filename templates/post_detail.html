@@ -2,7 +2,11 @@
 {% block content %}
   <article style="padding:1rem;border:1px solid #1f2937;border-radius:8px;background:#0b1224;">
     <h1 style="margin:.25rem 0;">{{ post.title }}</h1>
-    <small>by {{ post.author.username }} • {{ post.date_posted.strftime('%b %d, %Y') }}</small>
+    <span class="badge">{{ post.flair.replace('_',' ') }}</span>
+    <div style="margin-top:.25rem;">
+      <small>by {{ post.author.username }} • {{ post.date_posted.strftime('%b %d, %Y') }}</small>
+      <span style="margin-left:.5rem;"><a href="/api/posts/{{ post.id }}" style="font-size:.9rem;">View JSON</a></span>
+    </div>
     <p style="margin-top:1rem; white-space:pre-wrap;">{{ post.content }}</p>
 
     {% if current_user.is_authenticated and current_user.id == post.author.id %}
@@ -18,7 +22,7 @@
     {% endif %}
   </article>
 
-  <!-- Comments list -->
+  <!-- Comments -->
   <section style="margin-top:1.5rem;">
     <h2>Comments ({{ post.comments|length }})</h2>
     {% if post.comments %}

@@ -22,6 +22,7 @@
               {{ post.title }}
             </a>
             <span class="badge">{{ post.flair.replace('_',' ') }}</span>
+            <a href="{{ url_for('api_post_detail', post_id=post.id) }}" style="font-size:.85rem; margin-left:.5rem;">View JSON</a>
           </h2>
           <small>by {{ post.author.username }} • {{ post.date_posted.strftime('%b %d, %Y') }}</small>
           <p style="margin-top:.5rem;">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>

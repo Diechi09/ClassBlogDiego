@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+    <h1 style="margin:0;">API Demo</h1>
+    <a class="btn" href="{{ url_for('api_export_posts') }}">Download All Posts (JSON)</a>
+  </div>
+  <p>Helpful Tools here</p>
+
+  <section id="stats" style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224;">
+    <h2 style="margin-top:0;">Stats</h2>
+    <div id="statsContent">Loading stats…</div>
+  </section>
+
+  <section style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224;">
+    <h2 style="margin-top:0;">Live Search (from /api/posts)</h2>
+    <form id="searchForm" style="display:flex; gap:.5rem; flex-wrap:wrap;">
+      <input id="q" type="text" placeholder="Search posts…" />
+      <select id="flair">
+        <option value="">All flairs</option>
+        <option value="TRADE_HELP">TRADE HELP</option>
+        <option value="WAIVER_WIRE">WAIVER WIRE ADVICE</option>
+        <option value="INJURY_TALK">INJURY TALK</option>
+        <option value="OTHER">OTHER</option>
+      </select>
+      <button class="btn" type="submit">Search</button>
+    </form>
+    <div id="results" style="margin-top:1rem;">Type and search to load results…</div>
+    <div id="pager" style="margin-top:.5rem;"></div>
+  </section>
+
+  <script src="{{ url_for('static', filename='api_demo.js') }}"></script>
+{% endblock %}
