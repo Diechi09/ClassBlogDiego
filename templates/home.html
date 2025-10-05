@@ -1,5 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
   <h1>Home Page</h1>
-  <p>Welcome to your Flask Blog skeleton! Posts will show here later.</p>
+
+  {% if posts and posts|length > 0 %}
+    <section>
+      {% for post in posts %}
+        <article style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px;">
+          <h2 style="margin:.25rem 0;">{{ post.title }}</h2>
+          <small>by {{ post.author.username }} • {{ post.date_posted.strftime('%b %d, %Y') }}</small>
+          <p style="margin-top:.5rem;">{{ post.content }}</p>
+        </article>
+      {% endfor %}
+    </section>
+  {% else %}
+    <p>No posts yet. (Use <code>/seed</code> once to add demo posts.)</p>
+  {% endif %}
 {% endblock %}

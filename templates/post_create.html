@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>New Post</h1>
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div>
+      {{ form.title.label }}<br>
+      {{ form.title(size=64) }}
+      {% for e in form.title.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div style="margin-top:.5rem;">
+      {{ form.content.label }}<br>
+      {{ form.content(rows=6, cols=70) }}
+      {% for e in form.content.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div style="margin-top:1rem;">
+      {{ form.submit(class_="btn") }}
+    </div>
+  </form>
+{% endblock %}
