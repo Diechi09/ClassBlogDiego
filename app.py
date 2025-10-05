@@ -11,11 +11,10 @@ from datetime import datetime
 import json
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dev-secret-change-me'
+app.config['SECRET_KEY'] = '888888888188881'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# CSRF Protection
 csrf = CSRFProtect(app)
 
 db = SQLAlchemy(app)
@@ -23,12 +22,10 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login"
 login_manager.login_message_category = "danger"
 
-# Make csrf_token() available in templates
 @app.context_processor
 def inject_csrf_token():
     return dict(csrf_token=generate_csrf)
 
-# ---------- MODELS ----------
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -347,24 +344,6 @@ def api_export_posts():
 @app.route("/api-demo")
 def api_demo():
     return render_template("api_demo.html", title="API Demo")
-
-
-@app.route("/seed")
-def seed():
-    if not User.query.first():
-        u = User(username="Diego", email="diego@example.com")
-        u.set_password("password")
-        db.session.add(u)
-        db.session.commit()
-    u = User.query.first()
-    if Post.query.count() == 0:
-        db.session.add_all([
-            Post(title="Hello World", flair="OTHER", content="First post content", author=u),
-            Post(title="Trade Block", flair="TRADE_HELP", content="Who wants to trade RBs?", author=u),
-        ])
-        db.session.commit()
-    flash("Seeded demo user and posts.", "success")
-    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":

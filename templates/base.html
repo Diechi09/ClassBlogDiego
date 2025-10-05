@@ -1,44 +1,89 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% if title %}{{ title }} | Mini Blog{% else %}Mini Blog{% endif %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% if title %}{{ title }} | Fantasy Forum{% else %}Fantasy Forum{% endif %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      body{
+        background:
+          radial-gradient(1100px 700px at 70% -10%, #142449 0%, #0b1224 55%) fixed;
+      }
+      body::before{
+        content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+        background: repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,.03), rgba(255,255,255,.03) 1px,
+          transparent 1px, transparent 64px
+        );
+      }
+      .badge-flair{ font-weight:700; letter-spacing:.25px; }
+      .flair-TRADE_HELP  { background:#0e1f3f; color:#93c5fd; border:1px solid rgba(59,130,246,.35); }
+      .flair-WAIVER_WIRE { background:#0a2b17; color:#86efac; border:1px solid rgba(22,163,74,.35); }
+      .flair-INJURY_TALK { background:#3a1111; color:#fecaca; border:1px solid rgba(213,10,10,.35); }
+      .flair-OTHER       { background:#1f2937; color:#e5e7eb; border:1px solid rgba(148,163,184,.35); }
+      .ff-card { background:#0f1a33; border:1px solid rgba(231,238,251,.10); }
+      .ff-shadow { box-shadow: 0 6px 22px rgba(2,8,23,.45); }
+      a, .nav-link { text-decoration: none; }
+      a:hover, .nav-link:hover { text-decoration: underline; }
+    </style>
   </head>
   <body>
-    <nav class="navbar">
-      <a class="brand" href="{{ url_for('home') }}">Mini Blog</a>
-      <div class="links">
-        <a href="{{ url_for('about') }}">About</a>
-        <a href="{{ url_for('api_demo') }}">API Demo</a>
-        {% if current_user.is_authenticated %}
-          <span style="opacity:.8;margin-left:1rem;">Hi, {{ current_user.username }}</span>
-          <a href="{{ url_for('new_post') }}">New Post</a>
-          <a href="{{ url_for('logout') }}">Logout</a>
-        {% else %}
-          <a href="{{ url_for('register') }}">Register</a>
-          <a href="{{ url_for('login') }}">Login</a>
-        {% endif %}
+
+    <nav class="navbar navbar-expand-lg bg-primary sticky-top ff-shadow">
+      <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{{ url_for('home') }}">
+          <span>🏈</span> Fantasy Forum
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topnav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="topnav" class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('api_demo') }}">API Demo</a></li>
+          </ul>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            {% if current_user.is_authenticated %}
+              <li class="nav-item me-2">
+                <a class="btn btn-light btn-sm fw-semibold" href="{{ url_for('new_post') }}">+ New Post</a>
+              </li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+          </ul>
+        </div>
       </div>
     </nav>
 
-    <main class="container">
+    <div class="container mt-4">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-          <ul class="flash-list">
-            {% for category, message in messages %}
-              <li class="flash {{ category }}">{{ message }}</li>
-            {% endfor %}
-          </ul>
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category=='danger' else category }} border-0 ff-shadow" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
         {% endif %}
       {% endwith %}
+    </div>
 
+    <main class="container my-4">
       {% block content %}{% endblock %}
     </main>
 
-    <footer>
-      <p>FANTASY FORUM</p>
+    <footer class="border-top border-secondary-subtle py-4 mt-5">
+      <div class="container text-center text-secondary">
+        Fantasy Forum • Built with Flask + Bootstrap
+      </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
