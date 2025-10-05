@@ -11,6 +11,7 @@
       <a class="brand" href="{{ url_for('home') }}">Mini Blog</a>
       <div class="links">
         <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('api_demo') }}">API Demo</a>
         {% if current_user.is_authenticated %}
           <span style="opacity:.8;margin-left:1rem;">Hi, {{ current_user.username }}</span>
           <a href="{{ url_for('new_post') }}">New Post</a>
@@ -37,7 +38,7 @@
     </main>
 
     <footer>
-      <p>© 2025 Mini Blog by Diego Oliveros</p>
+      <p>FANTASY FORUM</p>
     </footer>
   </body>
 </html>
