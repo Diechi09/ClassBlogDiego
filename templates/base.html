@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% if title %}{{ title }} | Mini Blog{% else %}Mini Blog{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="brand">Mini Blog</a>
+        <div class="links">
+          <a href="{{ url_for('about') }}">About</a>
+          <a href="{{ url_for('register') }}">Register</a>
+          <a href="{{ url_for('login') }}">Login</a>
+        </div>
+      </nav>
+    </header>
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+    <footer>
+      <p>© 2025 Mini Blog by Diego Oliveros</p>
+    </footer>
+  </body>
+</html>

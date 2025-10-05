@@ -1,0 +1,6 @@
+body { margin: 0; font-family: system-ui, sans-serif; background:#f5f6fa; color:#222; }
+.navbar { display:flex; justify-content:space-between; padding:1rem 2rem; background:#111827; color:#f9fafb; }
+.navbar a { color:#f9fafb; text-decoration:none; margin-left:1rem; }
+.navbar a:hover { text-decoration:underline; }
+.container { padding:2rem; max-width:800px; margin:auto; }
+footer { text-align:center; padding:1rem; background:#111827; color:#aaa; margin-top:3rem; }
