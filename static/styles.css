@@ -1,4 +1,3 @@
-/* ============ THEME ============ */
 :root{
   --bg: #0b1224;             /* deep navy */
   --panel: #0f1a33;          /* card/nav background */
@@ -17,7 +16,6 @@
   --gray: #374151;
 }
 
-/* ============ RESET ============ */
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body{
@@ -31,7 +29,6 @@ body{
 a { color: #9fc5ff; }
 a:hover { text-decoration: underline; }
 
-/* optional, subtle "yard lines" */
 body::before{
   content:""; position: fixed; inset:0; pointer-events:none; z-index:-1;
   background: repeating-linear-gradient(
@@ -41,7 +38,6 @@ body::before{
   );
 }
 
-/* ============ LAYOUT ============ */
 .container{
   width: 100%;
   max-width: 1080px;
@@ -49,7 +45,6 @@ body::before{
   padding: 24px 20px 56px;
 }
 
-/* ============ NAVBAR ============ */
 .navbar{
   position: sticky; top: 0; z-index: 30;
   background: linear-gradient(90deg, var(--brand) 0%, var(--brand-2) 100%);
@@ -77,13 +72,11 @@ body::before{
 }
 .links a:hover{ text-decoration:underline; }
 
-/* ============ TYPE ============ */
 h1{ font-size: 2.15rem; line-height:1.15; margin: 6px 0 18px; letter-spacing:.2px; }
 h2{ font-size: 1.35rem; line-height:1.3; margin: 0 0 10px; }
 h3{ font-size: 1.05rem; margin: 0 0 6px; }
 small{ color: var(--muted); }
 
-/* ============ CARDS / POSTS ============ */
 .card{
   background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
   border: 1px solid var(--border);
@@ -99,7 +92,6 @@ a.post-title{
 }
 a.post-title:hover{ text-decoration:underline; }
 
-/* badges (flairs) */
 .badge{
   display:inline-block; vertical-align:middle;
   padding: .22rem .55rem;
@@ -113,7 +105,6 @@ a.post-title:hover{ text-decoration:underline; }
 .badge-INJURY_TALK  { background:#3a0e0e; color:#fecaca; border-color:rgba(213,10,10,.35); }
 .badge-OTHER        { background:#1f2937; color:#e5e7eb; border-color:rgba(148,163,184,.35); }
 
-/* ============ BUTTONS ============ */
 .btn{
   display:inline-flex; align-items:center; justify-content:center;
   padding: .55rem .9rem; border-radius:10px;
@@ -126,7 +117,6 @@ a.post-title:hover{ text-decoration:underline; }
 .btn.danger{ background:#7f1d1d; }
 .btn.ghost{ background:transparent; border-color:rgba(255,255,255,.18); }
 
-/* chips (filters) */
 .chips a{
   display:inline-block; margin:.25rem .5rem .25rem 0; padding:.35rem .65rem;
   border-radius:999px; border:1px solid var(--border);
@@ -134,7 +124,6 @@ a.post-title:hover{ text-decoration:underline; }
 }
 .chips a.active{ background:#1b2b52; }
 
-/* ============ FLASHES ============ */
 .flash-list{ list-style:none; margin:0 0 14px; padding:0; }
 .flash{
   padding:.6rem .8rem; border-radius:10px; margin:.35rem 0;
@@ -143,7 +132,6 @@ a.post-title:hover{ text-decoration:underline; }
 .flash.success{ background:#0e2a1c; border-color: rgba(22,163,74,.35); }
 .flash.danger { background:#2a0c0c; border-color: rgba(213,10,10,.35); }
 
-/* ============ FORMS ============ */
 label{ display:block; font-weight:800; margin:.35rem 0 .25rem; }
 input[type="text"], input[type="email"], input[type="password"],
 select, textarea{
@@ -156,10 +144,8 @@ select, textarea{
 textarea{ min-height: 160px; resize: vertical; }
 .form-actions{ margin-top:1rem; display:flex; gap:.5rem; align-items:center; }
 
-/* ============ FOOTER ============ */
 footer{ color:var(--muted); text-align:center; padding:28px 0; border-top:1px solid var(--border); margin-top:36px; }
 
-/* ============ UTILS ============ */
 .row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .m-0{ margin:0; }
 .mt-1{ margin-top:.5rem; } .mt-2{ margin-top:1rem; } .mt-3{ margin-top:1.5rem; }
