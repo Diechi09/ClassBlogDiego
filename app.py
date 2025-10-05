@@ -10,11 +10,11 @@ from flask_wtf.csrf import generate_csrf
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dev-secret-change-me'
+app.config['SECRET_KEY'] = '888888818'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-
+# CSRF Protection
 csrf = CSRFProtect(app)
 
 db = SQLAlchemy(app)
@@ -54,6 +54,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    flair = db.Column(db.String(20), nullable=False, default="OTHER")
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     comments = db.relationship('Comment', backref='post', lazy=True, cascade="all, delete")
@@ -72,12 +73,35 @@ class Comment(db.Model):
     def __repr__(self):
         return f"Comment('{self.id}', '{self.date_posted:%Y-%m-%d}')"
 
+def ensure_flair_column():
+    from sqlalchemy import text
+    with app.app_context():
+        rows = db.session.execute(text("PRAGMA table_info(post)")).fetchall()
+        cols = {row[1] for row in rows}
+        if "flair" not in cols:
+            db.session.execute(
+                text("ALTER TABLE post ADD COLUMN flair VARCHAR(20) NOT NULL DEFAULT 'OTHER'")
+            )
+            db.session.commit()
+
 
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.order_by(Post.date_posted.desc()).all()
-    return render_template("home.html", title="Home", posts=posts)
+    selected_flair = request.args.get("flair")
+    q = Post.query
+    if selected_flair:
+        q = q.filter_by(flair=selected_flair)
+    posts = q.order_by(Post.date_posted.desc()).all()
+    FLAIRS = [
+        ("TRADE_HELP", "TRADE HELP"),
+        ("WAIVER_WIRE", "WAIVER WIRE ADVICE"),
+        ("INJURY_TALK", "INJURY TALK"),
+        ("OTHER", "OTHER"),
+    ]
+    return render_template(
+        "home.html", title="Home", posts=posts, flairs=FLAIRS, selected_flair=selected_flair
+    )
 
 
 @app.route("/about")
@@ -136,7 +160,12 @@ def logout():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        post = Post(
+            title=form.title.data,
+            flair=form.flair.data,
+            content=form.content.data,
+            author=current_user
+        )
         db.session.add(post)
         db.session.commit()
         flash("Post published!", "success")
@@ -159,12 +188,14 @@ def edit_post(post_id):
     form = PostForm()
     if form.validate_on_submit():
         post.title = form.title.data
+        post.flair = form.flair.data
         post.content = form.content.data
         db.session.commit()
         flash("Post updated.", "success")
         return redirect(url_for("post_detail", post_id=post.id))
     elif request.method == "GET":
         form.title.data = post.title
+        form.flair.data = post.flair
         form.content.data = post.content
     return render_template("post_edit.html", title="Edit Post", form=form, post=post)
 
@@ -206,8 +237,8 @@ def seed():
     u = User.query.first()
     if Post.query.count() == 0:
         db.session.add_all([
-            Post(title="Hello World", content="First post content", author=u),
-            Post(title="Second Post", content="More content here.", author=u),
+            Post(title="Hello World", flair="OTHER", content="First post content", author=u),
+            Post(title="Trade Block", flair="TRADE_HELP", content="Who wants to trade RBs?", author=u),
         ])
         db.session.commit()
     flash("Seeded demo user and posts.", "success")
@@ -217,4 +248,5 @@ def seed():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+        ensure_flair_column()
     app.run(debug=True)
