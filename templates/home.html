@@ -2,6 +2,17 @@
 {% block content %}
   <h1>Home Page</h1>
 
+  <!-- Flair filters -->
+  <div style="margin:.5rem 0 1rem;">
+    <strong>Filter:</strong>
+    <a href="{{ url_for('home') }}"
+       style="margin-left:.5rem; {{ 'text-decoration:underline;' if not selected_flair else '' }}">All</a>
+    {% for val,label in flairs %}
+      <a href="{{ url_for('home', flair=val) }}"
+         style="margin-left:.5rem; {{ 'text-decoration:underline;' if selected_flair==val else '' }}">{{ label }}</a>
+    {% endfor %}
+  </div>
+
   {% if posts and posts|length > 0 %}
     <section>
       {% for post in posts %}
@@ -10,6 +21,7 @@
             <a href="{{ url_for('post_detail', post_id=post.id) }}" style="color:#60a5fa; text-decoration:none;">
               {{ post.title }}
             </a>
+            <span class="badge">{{ post.flair.replace('_',' ') }}</span>
           </h2>
           <small>by {{ post.author.username }} • {{ post.date_posted.strftime('%b %d, %Y') }}</small>
           <p style="margin-top:.5rem;">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
