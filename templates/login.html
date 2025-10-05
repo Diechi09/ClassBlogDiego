@@ -1,27 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Login</h1>
-  <form method="POST" novalidate>
-    {{ form.hidden_tag() }}
+  <h1 class="mb-3">Log In</h1>
+  <div class="card ff-card ff-shadow">
+    <div class="card-body">
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
 
-    <div>
-      {{ form.email.label }}<br>
-      {{ form.email(size=32) }}
-      {% for e in form.email.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
-    </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ form.email.label }}</label>
+          {{ form.email(class_="form-control bg-dark text-light") }}
+          {% for e in form.email.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
 
-    <div style="margin-top:.5rem;">
-      {{ form.password.label }}<br>
-      {{ form.password(size=32) }}
-      {% for e in form.password.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
-    </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ form.password.label }}</label>
+          {{ form.password(class_="form-control bg-dark text-light") }}
+          {% for e in form.password.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
 
-    <div style="margin-top:.5rem;">
-      <label>{{ form.remember() }} {{ form.remember.label.text }}</label>
-    </div>
+        <div class="form-check mb-3">
+          {{ form.remember(class_="form-check-input", id="rememberMe") }}
+          <label class="form-check-label" for="rememberMe">{{ form.remember.label.text }}</label>
+        </div>
 
-    <div style="margin-top:1rem;">
-      {{ form.submit(class_="btn") }}
+        {{ form.submit(class_="btn btn-light fw-semibold") }}
+      </form>
     </div>
-  </form>
+  </div>
 {% endblock %}

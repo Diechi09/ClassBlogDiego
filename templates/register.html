@@ -1,35 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Create Account</h1>
-  <form method="POST" novalidate>
-    {{ form.hidden_tag() }}
+  <h1 class="mb-3">Create Account</h1>
+  <div class="card ff-card ff-shadow">
+    <div class="card-body">
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
 
-    <div>
-      {{ form.username.label }}<br>
-      {{ form.username(size=32) }}
-      {% for e in form.username.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
-    </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ form.username.label }}</label>
+          {{ form.username(class_="form-control bg-dark text-light") }}
+          {% for e in form.username.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
 
-    <div style="margin-top:.5rem;">
-      {{ form.email.label }}<br>
-      {{ form.email(size=32) }}
-      {% for e in form.email.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
-    </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ form.email.label }}</label>
+          {{ form.email(class_="form-control bg-dark text-light") }}
+          {% for e in form.email.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
 
-    <div style="margin-top:.5rem;">
-      {{ form.password.label }}<br>
-      {{ form.password(size=32) }}
-      {% for e in form.password.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
-    </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ form.password.label }}</label>
+          {{ form.password(class_="form-control bg-dark text-light") }}
+          {% for e in form.password.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
 
-    <div style="margin-top:.5rem;">
-      {{ form.confirm_password.label }}<br>
-      {{ form.confirm_password(size=32) }}
-      {% for e in form.confirm_password.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
-    </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ form.confirm_password.label }}</label>
+          {{ form.confirm_password(class_="form-control bg-dark text-light") }}
+          {% for e in form.confirm_password.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
 
-    <div style="margin-top:1rem;">
-      {{ form.submit(class_="btn") }}
+        {{ form.submit(class_="btn btn-light fw-semibold") }}
+      </form>
     </div>
-  </form>
+  </div>
 {% endblock %}

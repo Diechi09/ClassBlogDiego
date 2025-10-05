@@ -2,64 +2,25 @@
 {% block content %}
   <h1>About Fantasy Forum</h1>
 
-  <section style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224;">
-    <p>
-      <strong>Fantasy Forum</strong> is a simple, community-driven space for NFL fantasy football discussion.
-      It’s built to be fast, friendly, and focused on practical advice—whether you’re weighing a trade,
-      scanning the waiver wire, or navigating injury chaos before kickoff.
-    </p>
-    <p>
-      Under the hood, this project is a full-stack Flask app with authentication, CRUD posts, comments,
-      category flairs, and a small REST API. On the surface, it’s a place to learn from each other and win your league.
-    </p>
+  <section class="card">
+    <p><strong>Fantasy Forum</strong> is a community for NFL fantasy football discussion—trade help, waiver targets, injury talk, and more. It’s lightweight, quick, and focused on practical advice so you can win your league.</p>
+    <p>Under the hood: Flask + SQLite with auth, CRUD posts, comments, flairs, and a REST API (with export + live demo).</p>
   </section>
 
-  <section style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224;">
-    <h2 style="margin-top:0;">What you can do here</h2>
-    <ul style="margin:0; padding-left:1.25rem;">
-      <li><strong>Post questions & takes</strong> with a flair:
-        <span class="badge">TRADE HELP</span>,
-        <span class="badge">WAIVER WIRE ADVICE</span>,
-        <span class="badge">INJURY TALK</span>,
-        <span class="badge">OTHER</span>.
+  <section class="card mt-2">
+    <h2 class="m-0">What you can do here</h2>
+    <ul>
+      <li><strong>Post questions</strong> with a flair:
+        <span class="badge badge-TRADE_HELP">TRADE HELP</span>,
+        <span class="badge badge-WAIVER_WIRE">WAIVER WIRE ADVICE</span>,
+        <span class="badge badge-INJURY_TALK">INJURY TALK</span>,
+        <span class="badge badge-OTHER">OTHER</span>.
       </li>
-      <li><strong>Comment</strong> on threads to share insight, stats, and start/sit logic.</li>
-      <li><strong>Edit or delete</strong> your own posts to keep information current.</li>
-      <li><strong>Filter & browse</strong> by flair on the <a href="{{ url_for('home') }}">Home</a> page to find the content you need fast.</li>
-      <li><strong>Explore the API</strong> on the <a href="{{ url_for('api_demo') }}">API Demo</a> page, or pull JSON directly from endpoints like
-        <a href="{{ url_for('api_posts') }}">/api/posts</a>.
-      </li>
-      <li><strong>Download data</strong> for research or auditing via
-        <a href="{{ url_for('api_export_posts') }}">Export All Posts (JSON)</a>.
-      </li>
+      <li><strong>Comment</strong> with reasoning, data, and start/sit logic.</li>
+      <li><strong>Edit/Delete</strong> your posts to keep info current.</li>
+      <li><strong>Filter</strong> by flair on the Home page to find what you need fast.</li>
+      <li>Explore the <a href="{{ url_for('api_demo') }}">API Demo</a> or pull JSON from <a href="{{ url_for('api_posts') }}">/api/posts</a>.</li>
+      <li>Download all posts via <a href="{{ url_for('api_export_posts') }}">JSON export</a>.</li>
     </ul>
-  </section>
-
-  <section style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224;">
-    <h2 style="margin-top:0;">How to get started</h2>
-    <ol style="margin:0; padding-left:1.25rem;">
-      <li><a href="{{ url_for('register') }}">Create an account</a> (or <a href="{{ url_for('login') }}">log in</a> if you already have one).</li>
-      <li>Click <a href="{{ url_for('new_post') }}">New Post</a>, choose a flair, and write your question or analysis.</li>
-      <li>Use the Home page filters to find trade/waiver/injury topics relevant to you.</li>
-      <li>Jump into the comments—share data, reasoning, and polite counter-points.</li>
-    </ol>
-  </section>
-
-  <section style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224;">
-    <h2 style="margin-top:0;">Community guidelines</h2>
-    <ul style="margin:0; padding-left:1.25rem;">
-      <li><strong>Be constructive.</strong> Explain the “why” behind your advice.</li>
-      <li><strong>Be respectful.</strong> No personal attacks or gatekeeping.</li>
-      <li><strong>Add context.</strong> Scoring format, team needs, bye weeks, injuries matter.</li>
-      <li><strong>Keep it relevant.</strong> Use flairs to help others discover your post.</li>
-    </ul>
-  </section>
-
-  <section style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224;">
-    <h2 style="margin-top:0;">Tech notes (for the curious)</h2>
-    <p style="margin:0;">
-      Flask + SQLite + WTForms + Flask-Login power the site. The REST API supports JSON reads with search, pagination,
-      and export. It’s intentionally lightweight so it’s easy to understand, extend, and deploy.
-    </p>
   </section>
 {% endblock %}
