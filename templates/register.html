@@ -1,5 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Register</h1>
-  <p>Registration form coming soon.</p>
+  <h1>Create Account</h1>
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div>
+      {{ form.username.label }}<br>
+      {{ form.username(size=32) }}
+      {% for e in form.username.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div style="margin-top:.5rem;">
+      {{ form.email.label }}<br>
+      {{ form.email(size=32) }}
+      {% for e in form.email.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div style="margin-top:.5rem;">
+      {{ form.password.label }}<br>
+      {{ form.password(size=32) }}
+      {% for e in form.password.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div style="margin-top:.5rem;">
+      {{ form.confirm_password.label }}<br>
+      {{ form.confirm_password(size=32) }}
+      {% for e in form.confirm_password.errors %}<div class="flash danger">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div style="margin-top:1rem;">
+      {{ form.submit(class_="btn") }}
+    </div>
+  </form>
 {% endblock %}

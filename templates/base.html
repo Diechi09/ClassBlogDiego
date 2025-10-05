@@ -2,23 +2,35 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% if title %}{{ title }} | Mini Blog{% else %}Mini Blog{% endif %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
-    <header>
-      <nav class="navbar">
-        <a href="{{ url_for('home') }}" class="brand">Mini Blog</a>
-        <div class="links">
-          <a href="{{ url_for('about') }}">About</a>
-          <a href="{{ url_for('register') }}">Register</a>
-          <a href="{{ url_for('login') }}">Login</a>
-        </div>
-      </nav>
-    </header>
+    <nav class="navbar">
+      <a class="brand" href="{{ url_for('home') }}">Mini Blog</a>
+      <div class="links">
+        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('register') }}">Register</a>
+        <a href="{{ url_for('login') }}">Login</a>
+      </div>
+    </nav>
+
     <main class="container">
+      <!-- Flash messages (success / danger / info) -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flash-list">
+            {% for category, message in messages %}
+              <li class="flash {{ category }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
       {% block content %}{% endblock %}
     </main>
+
     <footer>
       <p>© 2025 Mini Blog by Diego Oliveros</p>
     </footer>
