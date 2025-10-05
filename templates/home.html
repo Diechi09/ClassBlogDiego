@@ -5,14 +5,31 @@
   {% if posts and posts|length > 0 %}
     <section>
       {% for post in posts %}
-        <article style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px;">
-          <h2 style="margin:.25rem 0;">{{ post.title }}</h2>
+        <article style="margin:1rem 0; padding:1rem; border:1px solid #1f2937; border-radius:8px; background:#0b1224;">
+          <h2 style="margin:.25rem 0;">
+            <a href="{{ url_for('post_detail', post_id=post.id) }}" style="color:#60a5fa; text-decoration:none;">
+              {{ post.title }}
+            </a>
+          </h2>
           <small>by {{ post.author.username }} • {{ post.date_posted.strftime('%b %d, %Y') }}</small>
-          <p style="margin-top:.5rem;">{{ post.content }}</p>
+          <p style="margin-top:.5rem;">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+
+          {% if current_user.is_authenticated and current_user.id == post.author.id %}
+            <div style="margin-top:.5rem;">
+              <a class="btn" href="{{ url_for('edit_post', post_id=post.id) }}">Edit</a>
+              <form method="POST"
+                    action="{{ url_for('delete_post', post_id=post.id) }}"
+                    style="display:inline;"
+                    onsubmit="return confirm('Delete this post?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn" type="submit" style="background:#b91c1c;">Delete</button>
+              </form>
+            </div>
+          {% endif %}
         </article>
       {% endfor %}
     </section>
   {% else %}
-    <p>No posts yet. (Use <code>/seed</code> once to add demo posts.)</p>
+    <p>No posts yet. (Use <code>/post/new</code> to create one.)</p>
   {% endif %}
 {% endblock %}
